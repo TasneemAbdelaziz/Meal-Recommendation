@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:recipe_app_withai/core/theme/app_pallet.dart';
+import 'package:recipe_app_withai/features/home/presentation/pages/ingerent.dart';
 import 'add_recipe_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -36,15 +38,18 @@ class _HomePageState extends State<HomePage> {
             Align(
               alignment: Alignment.centerRight,
               child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                backgroundColor: AppPallet.mainColor,
+                ),
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const AddRecipePage(),
+                      builder: (context) => const AddRecipeForm(),
                     ),
                   );
                 },
-                child: const Text("Add your ingredients"),
+                child: const Text("Add your ingredients",style: TextStyle(color: AppPallet.whiteColor),),
               ),
             ),
             const SizedBox(height: 10),

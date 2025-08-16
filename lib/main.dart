@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:recipe_app_withai/core/common/cubits/app_users/app_user_cubit.dart';
 import 'package:recipe_app_withai/core/init_dependencies.dart';
 import 'package:recipe_app_withai/features/auth/presentation/manager/auth_bloc.dart';
 import 'package:recipe_app_withai/features/auth/presentation/pages/sign_in_page.dart';
 import 'package:recipe_app_withai/features/auth/presentation/pages/sign_up_page.dart';
 import 'package:recipe_app_withai/features/favorite/presentation/pages/favorite_page.dart';
+import 'package:recipe_app_withai/features/home/presentation/manager/recipe_bloc.dart';
 import 'package:recipe_app_withai/features/home/presentation/pages/home_page.dart';
 import 'package:recipe_app_withai/features/profile/presentation/pages/profile_page.dart';
 import 'package:recipe_app_withai/features/recipe_details/presentation/pages/recipe_details_page.dart';
@@ -24,7 +26,13 @@ void main() async{
   runApp(
       MultiBlocProvider(providers: [
         BlocProvider(
+          create: (_) => serviceLocator<AppUserCubit>(),
+        ),
+        BlocProvider(
           create: (_) => serviceLocator<AuthBloc>(),
+        ),
+        BlocProvider(
+          create: (_) => serviceLocator<RecipeBloc>(),
         ),
       ],
           child: const MyApp()));
