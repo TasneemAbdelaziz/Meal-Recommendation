@@ -7,6 +7,7 @@ import 'package:recipe_app_withai/features/auth/presentation/pages/sign_in_page.
 import 'package:recipe_app_withai/features/auth/presentation/pages/sign_up_page.dart';
 import 'package:recipe_app_withai/features/favorite/presentation/pages/favorite_page.dart';
 import 'package:recipe_app_withai/features/home/presentation/pages/home_page.dart';
+import 'package:recipe_app_withai/features/home/presentation/pages/add_recipe_page.dart';
 import 'package:recipe_app_withai/features/profile/presentation/pages/profile_page.dart';
 import 'package:recipe_app_withai/features/recipe_details/presentation/pages/recipe_details_page.dart';
 import 'package:recipe_app_withai/features/recipe_details/presentation/bloc/recipe_details_bloc.dart';
@@ -17,23 +18,23 @@ import 'package:recipe_app_withai/core/theme/theme.dart';
 import 'package:recipe_app_withai/onboarding/introduction_screen.dart';
 import 'package:recipe_app_withai/onboarding/splash_screen.dart';
 import 'package:recipe_app_withai/translation/translation_page.dart';
+import 'package:recipe_app_withai/features/home/presentation/bloc/home_bloc.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initDependencies();
-  runApp(
-      MultiBlocProvider(providers: [
-        BlocProvider(
-          create: (_) => serviceLocator<AuthBloc>(),
-        ),
-      ],
-          child: const MyApp()));
+  runApp(MultiBlocProvider(providers: [
+    BlocProvider(
+      create: (_) => serviceLocator<AuthBloc>(),
+    ),
+    BlocProvider(
+      create: (_) => serviceLocator<HomeBloc>(),
+    ),
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
-
   const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
@@ -47,12 +48,13 @@ class MyApp extends StatelessWidget {
         home: SplashScreen(),
         initialRoute: SplashScreen.routeName,
         routes: {
-          IntroductionScreen.routeName: (_) =>  IntroductionScreen(),
-          SignIn.routeName: (_) =>  SignIn(),
-          SignUp.routeName: (_) =>  SignUp(),
-          TransitionPage.routeName: (_) =>  TransitionPage(),
-          HomePage.routeName: (_) =>  HomePage(),
-          ProfilePage.routeName: (_) =>  ProfilePage(),
+          IntroductionScreen.routeName: (_) => IntroductionScreen(),
+          SignIn.routeName: (_) => SignIn(),
+          SignUp.routeName: (_) => SignUp(),
+          TransitionPage.routeName: (_) => TransitionPage(),
+          HomePage.routeName: (_) => HomePage(),
+          AddRecipePage.routeName: (_) => AddRecipePage(),
+          ProfilePage.routeName: (_) => ProfilePage(),
           FavoritePage.routeName: (_) => FavoritePage(),
           RecipeDetailsPage.routeName: (context) {
             final recipeId =

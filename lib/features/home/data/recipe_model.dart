@@ -1,5 +1,6 @@
-import 'package:recipe_app_withai/features/home/domian/recipe_entity.dart';
-
+import 'package:recipe_app_withai/features/home/domain/recipe_entity.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../../core/secrets/app_secrets.dart';
 class RecipeModel extends RecipeEntity {
   RecipeModel({
     required super.title,
@@ -24,3 +25,7 @@ class RecipeModel extends RecipeEntity {
   }
 }
 
+final supabase = SupabaseClient(
+  AppSecrets.SupabaseUrl,
+  AppSecrets.SupabaseAnnokey,
+);

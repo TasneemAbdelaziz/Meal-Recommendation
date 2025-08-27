@@ -10,6 +10,9 @@ import 'package:recipe_app_withai/features/auth/domain/use_cases/google_sign_in.
 import 'package:recipe_app_withai/features/auth/domain/use_cases/user_sign_in.dart';
 import 'package:recipe_app_withai/features/auth/domain/use_cases/user_sign_up.dart';
 import 'package:recipe_app_withai/features/auth/presentation/manager/auth_bloc.dart';
+import 'package:recipe_app_withai/features/home/data/recipe_repository_impl.dart';
+import 'package:recipe_app_withai/features/home/domain/recipe_repository.dart';
+import 'package:recipe_app_withai/features/home/presentation/bloc/home_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 final serviceLocator = GetIt.instance;
@@ -24,30 +27,30 @@ Future<void> initDependencies() async {
     serviceLocator.registerSingleton<SupabaseClient>(supabase.client);
     print("Supabase Initialized Successfully");
   } catch (e) {
-
     print("Failed to initialize Supabase: $e");
     rethrow;
   }
 
   // Initialize Google Sign-In
   serviceLocator.registerLazySingleton<GoogleSignIn>(
-        () => GoogleSignIn(
+    () => GoogleSignIn(
       scopes: ['email'],
-            clientId: Platform.isAndroid
-                ? AppSecrets.googleAndroidClientId
-            : null,
-        serverClientId: AppSecrets.googleWebClientId,
+      clientId: Platform.isAndroid ? AppSecrets.googleAndroidClientId : null,
+      serverClientId: AppSecrets.googleWebClientId,
     ),
   );
 
   // Initialize Auth dependencies
   initAuth();
+
+  // Initialize Home dependencies
+  initHome();
 }
 
 void initAuth() {
   // Data sources
   serviceLocator.registerFactory<SupabaseDatasource>(
-        () => SupabaseDatasourceImpl(
+    () => SupabaseDatasourceImpl(
       supabaseClient: serviceLocator(),
       googleSignIn: serviceLocator(),
     ),
@@ -55,7 +58,7 @@ void initAuth() {
 
   // Repositories
   serviceLocator.registerFactory<AuthRepository>(
-        () => AuthRepositoryImpl(serviceLocator()),
+    () => AuthRepositoryImpl(serviceLocator()),
   );
 
   // Use cases
@@ -67,11 +70,23 @@ void initAuth() {
 
   // Bloc
   serviceLocator.registerLazySingleton(
-        () => AuthBloc(
+    () => AuthBloc(
       googleSignInUseCase: serviceLocator(),
       userSignUp: serviceLocator(),
       userSignIn: serviceLocator(),
       currentUser: serviceLocator(),
     ),
+  );
+}
+
+void initHome() {
+  // Repositories
+  serviceLocator.registerLazySingleton<RecipeRepository>(
+    () => RecipeRepositoryImpl(),
+  );
+
+  // Bloc
+  serviceLocator.registerLazySingleton(
+    () => HomeBloc(serviceLocator()),
   );
 }
