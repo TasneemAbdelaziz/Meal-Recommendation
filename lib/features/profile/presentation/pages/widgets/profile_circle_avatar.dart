@@ -58,11 +58,11 @@ class _ProfileCircleAvatarState extends State<ProfileCircleAvatar> {
     final bytes = await image.readAsBytes();
     // رفع الصورة إلى Supabase Storage (bucket: avatar)
     await Supabase.instance.client.storage
-        .from('avatar')
+        .from('avatars')
         .uploadBinary(filePath, bytes, fileOptions: const FileOptions(upsert: true));
     // الحصول على رابط الصورة
     final publicUrl = Supabase.instance.client.storage
-        .from('avatar')
+        .from('avatars')
         .getPublicUrl(filePath);
     // تحديث رابط الصورة في قاعدة البيانات
     await Supabase.instance.client
