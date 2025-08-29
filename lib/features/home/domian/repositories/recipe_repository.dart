@@ -17,9 +17,12 @@ abstract interface class RecipeRepository {
     required bool isFavorite,
     required String posterId
 });
+  
+  Future<Either<Failure, List<RecipeEntity>>> getRecipes();
+  Future<Either<Failure, RecipeEntity>> toggleFavorite(String recipeId);
+  
   List<RecipeEntity> getAllRecipes();
   void addRecipe(RecipeEntity recipe);
-  // void toggleFavorite(RecipeEntity recipe);
   List<RecipeEntity> getFavoriteRecipes();
 }
 

@@ -15,7 +15,9 @@ import 'package:recipe_app_withai/features/home/data/data_sources/meal_remote_da
 import 'package:recipe_app_withai/features/home/data/repositories/recipe_repository_impl.dart';
 import 'package:recipe_app_withai/features/home/domian/repositories/recipe_repository.dart';
 import 'package:recipe_app_withai/features/home/domian/use_cases/add_recipe_usecase.dart';
-import 'package:recipe_app_withai/features/home/presentation/manager/recipe_bloc.dart';
+import 'package:recipe_app_withai/features/home/domian/use_cases/get_recipes.dart';
+import 'package:recipe_app_withai/features/home/domian/use_cases/toggle_favorite.dart';
+import 'package:recipe_app_withai/features/home/presentation/bloc/recipe/recipe_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 final serviceLocator = GetIt.instance;
@@ -43,9 +45,7 @@ Future<void> initDependencies() async {
     ),
   );
 
-  serviceLocator.registerLazySingleton(
-        () => AppUserCubit()
-  );
+  serviceLocator.registerLazySingleton(() => AppUserCubit());
 
   // Initialize Auth dependencies
   initAuth();
@@ -102,11 +102,19 @@ void _initRecipe() {
         serviceLocator(),
       ),
     )
+    ..registerFactory(
+      () => GetRecipes(
+        serviceLocator(),
+      ),
+    )
+    ..registerFactory(
+      () => ToggleFavorite(
+        serviceLocator(),
+      ),
+    )
     ..registerLazySingleton(
       () => RecipeBloc(
         serviceLocator(),
       ),
     );
-
-  ;
 }

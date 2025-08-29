@@ -22,26 +22,48 @@ class RecipeRepositoryImpl implements RecipeRepository {
     _recipes.add(recipe);
   }
 
-  // @override
-  // void toggleFavorite(RecipeEntity recipe) {
-  //   final index = _recipes.indexOf(recipe);
-  //   if (index != -1) {
-  //     _recipes[index] = RecipeEntity(
-  //       title: recipe.title,
-  //       category: recipe.category,
-  //
-  //       // ingredientsCount: recipe.ingredientsCount,
-  //       description: recipe.description,
-  //       ingredients: recipe.ingredients,
-  //       durationMinutes: recipe.durationMinutes,
-  //       isFavorite: !recipe.isFavorite,
-  //     );
-  //   }
-  // }
-
   @override
   List<RecipeEntity> getFavoriteRecipes() =>
       _recipes.where((r) => r.isFavorite).toList();
+
+  @override
+  Future<Either<Failure, List<RecipeEntity>>> getRecipes() async {
+    try {
+      // For now, return the local recipes
+      // In a real app, this would fetch from a remote source
+      return right(_recipes);
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, RecipeEntity>> toggleFavorite(String recipeId) async {
+    try {
+      final recipeIndex = _recipes.indexWhere((recipe) => recipe.id == recipeId);
+      if (recipeIndex != -1) {
+        final recipe = _recipes[recipeIndex];
+        final updatedRecipe = RecipeEntity(
+          id: recipe.id,
+          posterId: recipe.posterId,
+          title: recipe.title,
+          category: recipe.category,
+          description: recipe.description,
+          ingredients: recipe.ingredients,
+          durationMinutes: recipe.durationMinutes,
+          imagePath: recipe.imagePath,
+          isFavorite: !recipe.isFavorite,
+          updatedAt: recipe.updatedAt,
+        );
+        _recipes[recipeIndex] = updatedRecipe;
+        return right(updatedRecipe);
+      } else {
+        return left(Failure('Recipe not found'));
+      }
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
 
   @override
   Future<Either<Failure, RecipeEntity>> uploadRecipe({
