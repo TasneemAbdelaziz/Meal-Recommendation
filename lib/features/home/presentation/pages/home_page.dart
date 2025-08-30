@@ -7,6 +7,8 @@ import 'package:recipe_app_withai/features/home/domain/entities/recipe_entity.da
 import 'package:recipe_app_withai/features/home/presentation/manager/home_bloc.dart';
 import 'package:recipe_app_withai/features/home/presentation/widgets/cards/recipe_card.dart';
 
+import '../../../chat/presentation/Screens/GeminiAiScreen.dart';
+
 class HomePage extends StatefulWidget {
   static const String routeName = "HomePage";
   const HomePage({super.key});
@@ -65,7 +67,10 @@ class _HomePageState extends State<HomePage> {
                 //   child:
                 IconButton(
                     onPressed: () {
-
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => MealSuggestionScreen()),
+                      );
                     },
                     icon:  Image.asset("assets/icons/gemini.png",width: 40.w,height: 40.h,),
                     padding: EdgeInsets.zero,
