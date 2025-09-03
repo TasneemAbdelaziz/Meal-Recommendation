@@ -1,7 +1,7 @@
 import 'package:fpdart/fpdart.dart';
+import 'package:recipe_app_withai/core/common/entities/my_user.dart';
 import 'package:recipe_app_withai/core/errors/failure.dart';
 import 'package:recipe_app_withai/features/auth/data/models/user_model.dart';
-import 'package:recipe_app_withai/features/auth/domain/entities/my_user.dart';
 
 abstract interface class AuthRepository{
   Future<Either<Failure,MyUser>> signUpWithEmailAndPassword({

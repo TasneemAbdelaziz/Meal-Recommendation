@@ -1,4 +1,4 @@
-import 'package:recipe_app_withai/features/auth/domain/entities/my_user.dart';
+import 'package:recipe_app_withai/core/common/entities/my_user.dart';
 class UserModel extends MyUser {
   UserModel({required super.id, required super.email, required super.name,required super.phone});
 

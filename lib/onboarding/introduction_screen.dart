@@ -35,7 +35,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
               children: [
                 IntroPage(image: "assets/images/well_done.png",
                     title: "Discover hundreds of recipes",
-                    description: "Discover new tastes to prepare at home,your culinary adventure begins!",
+                    description: "Discover new tastes to prepare at add_recipe,your culinary adventure begins!",
                   pageNumber: 1,
 
                 ),

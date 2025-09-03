@@ -1,7 +1,7 @@
 import 'package:fpdart/src/either.dart';
+import 'package:recipe_app_withai/core/common/entities/my_user.dart';
 import 'package:recipe_app_withai/core/errors/failure.dart';
 import 'package:recipe_app_withai/features/auth/data/data_sources/supabase_datasource.dart';
-import 'package:recipe_app_withai/features/auth/domain/entities/my_user.dart';
 import 'package:recipe_app_withai/features/auth/domain/repositories/auth_repositories.dart';
 
 class AuthRepositoryImpl implements AuthRepository{
