@@ -20,14 +20,22 @@ class _TransitionPageState extends State<TransitionPage> {
 
   final List<Widget> _pages = [
     const HomePage(),
-    FavoritePage(),
+    FavoritesPage(),
     const ProfilePage(),
   ];
+
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const AppDrawer(),
+      drawer:  AppDrawer(selectedIndex: selectedIndex,
+      onDestinationSelected: (index) {
+        setState(() {
+          selectedIndex = index;
+        });
+      },
+      ),
       appBar: AppBar(
         backgroundColor: AppPallet.whiteColor,
         leading: Builder(

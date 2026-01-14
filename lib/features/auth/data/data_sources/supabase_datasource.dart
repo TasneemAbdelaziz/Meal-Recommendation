@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:recipe_app_withai/core/errors/auth_error_mapper.dart';
 import 'package:recipe_app_withai/core/errors/failure.dart';
 import 'package:recipe_app_withai/features/auth/data/models/user_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -37,23 +39,22 @@ class  SupabaseDatasourceImpl implements SupabaseDatasource{
   @override
   Future<UserModel> signInWithEmailPassword({ required email, required password}) async{
     try{
-
-      final response = await supabaseClient.auth.signInWithPassword(password: password,email: email);
+      final response = await supabaseClient.auth.signInWithPassword(
+        password: password,
+        email: email,
+      ).timeout(
+        const Duration(seconds: 30),
+        onTimeout: () => throw TimeoutException('Connection timeout'),
+      );
+      
       if(response.user == null){
-        throw Exception("user in null");
+        throw Exception("User is null");
       }
       return UserModel.fromJson(response.user!.toJson());
+    } catch (e) {
+      debugPrint('❌ Sign-in error: $e');
+      throw AuthErrorMapper.mapException(e);
     }
-    catch (e) {
-      if (e is AuthException) {
-        throw ServerFailure(e.message);
-      } else if (e is SocketException) {
-        throw NetworkFailure("No Internet Connection");
-      } else {
-        throw Failure("Unexpected error: ${e.toString()}");
-      }
-    }
-
   }
 
   @override
@@ -62,29 +63,28 @@ class  SupabaseDatasourceImpl implements SupabaseDatasource{
     required String email,
     required String password,
     required String phone
-
   })async {
     try {
-      final response = await supabaseClient.auth.signUp(password: password,
-          email: email,
-          data: {"name": name, "phone": phone});
+      final response = await supabaseClient.auth.signUp(
+        password: password,
+        email: email,
+        data: {"name": name, "phone": phone},
+      ).timeout(
+        const Duration(seconds: 30),
+        onTimeout: () => throw TimeoutException('Connection timeout'),
+      );
+      
       if (response.user == null) {
-        throw Exception("user in null");
+        throw Exception("User is null");
       }
-      print("-----------${response.user?.email}");
+      debugPrint('✅ User signed up: ${response.user?.email}');
       return UserModel.fromJson(response.user!.toJson());
-    }
-    catch (e) {
-      if (e is AuthException) {
-        if (e.message.contains("User already registered")) {
-          throw ServerFailure("User already registered");
-        }
-        throw ServerFailure(e.message);
-      } else if (e is SocketException) {
-        throw NetworkFailure("no internet connection");
-      } else {
-        throw Failure("Exception: ${e.toString()}");
+    } catch (e) {
+      debugPrint('❌ Sign-up error: $e');
+      if (e is AuthException && e.message.contains("User already registered")) {
+        throw ServerFailure("User already registered");
       }
+      throw AuthErrorMapper.mapException(e);
     }
   }
 
@@ -95,14 +95,22 @@ class  SupabaseDatasourceImpl implements SupabaseDatasource{
   Future<UserModel?> getCurrentUserData() async{
     try{
       if(currentUserSession!=null){
-        final userData = await supabaseClient.from('profiles').select().eq('id', currentUserSession!.user.id);
+        final userData = await supabaseClient
+            .from('profiles')
+            .select()
+            .eq('id', currentUserSession!.user.id)
+            .timeout(
+              const Duration(seconds: 15),
+              onTimeout: () => throw TimeoutException('Connection timeout'),
+            );
         return UserModel.fromJson(userData.first).copyWith(
           email: currentUserSession!.user.email,
         );
       }
-    }
-    catch(e){
-      throw Exception(e.toString());
+      return null;
+    } catch(e){
+      debugPrint('❌ Get current user error: $e');
+      throw AuthErrorMapper.mapException(e);
     }
   }
 
@@ -126,6 +134,9 @@ class  SupabaseDatasourceImpl implements SupabaseDatasource{
         provider: OAuthProvider.google,
         idToken: idToken,
         accessToken: accessToken,
+      ).timeout(
+        const Duration(seconds: 30),
+        onTimeout: () => throw TimeoutException('Connection timeout'),
       );
 
       if (response.user == null) {
@@ -133,20 +144,16 @@ class  SupabaseDatasourceImpl implements SupabaseDatasource{
       }
 
       return UserModel.fromJson(response.user!.toJson());
-    } on AuthException catch (e) {
-      throw ServerFailure(e.message);
-    } on SocketException catch (_) {
-      throw NetworkFailure("No internet connection");
     } catch (e) {
       if (e is PlatformException) {
-        debugPrint('Google Sign-In PlatformException:');
+        debugPrint('❌ Google Sign-In PlatformException:');
         debugPrint('Error code: ${e.code}');
         debugPrint('Error message: ${e.message}');
         debugPrint('Error details: ${e.details}');
       } else {
-        debugPrint('Google Sign-In Error: $e');
+        debugPrint('❌ Google Sign-In Error: $e');
       }
-      throw Failure(e.toString());
+      throw AuthErrorMapper.mapException(e);
     }
   }
 

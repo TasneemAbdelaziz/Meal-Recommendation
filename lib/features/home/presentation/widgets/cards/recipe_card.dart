@@ -1,24 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:recipe_app_withai/features/favorite/presentation/widgets/favorite_button.dart';
+import 'package:recipe_app_withai/features/favorite/presentation/widgets/stars_icons.dart';
 import 'package:recipe_app_withai/features/home/domain/entities/recipe_entity.dart';
+import 'package:recipe_app_withai/features/favorite/presentation/bloc/favorites_bloc.dart';
+import 'package:recipe_app_withai/features/favorite/presentation/bloc/favorites_event.dart';
+import 'package:recipe_app_withai/features/favorite/presentation/bloc/favorites_state.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RecipeCard extends StatelessWidget {
   final RecipeEntity recipe;
-  final VoidCallback? onFavoriteToggle;
 
   const RecipeCard({
     super.key,
     required this.recipe,
-    this.onFavoriteToggle,
   });
 
   @override
   Widget build(BuildContext context) {
+    final userId = Supabase.instance.client.auth.currentUser?.id;
+    final recipeId = recipe.id;
+
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Stack(
         children: [
-          // Recipe Image Background
+          // ================= Image =================
           ClipRRect(
             borderRadius: BorderRadius.circular(16),
             child: recipe.imagePath != null && recipe.imagePath!.isNotEmpty
@@ -27,12 +35,12 @@ class RecipeCard extends StatelessWidget {
               height: 180,
               width: double.infinity,
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => _buildPlaceholder(),
+              errorBuilder: (_, __, ___) => _buildPlaceholder(),
             )
                 : _buildPlaceholder(),
           ),
 
-          // Gradient Overlay
+          // ================= Gradient Overlay =================
           Container(
             height: 180,
             decoration: BoxDecoration(
@@ -48,22 +56,33 @@ class RecipeCard extends StatelessWidget {
             ),
           ),
 
-          // Love/Favorite Button - Top Right
+          // ================= Favorite Button =================
           Positioned(
             top: 12,
             right: 12,
-            child: GestureDetector(
-              onTap: onFavoriteToggle,
-                child: Icon(
-                  recipe.isFavorite ? Icons.favorite : Icons.favorite_border,
-                  color: recipe.isFavorite ? Colors.red : Colors.white,
-                  size: 24,
-                ),
-              ),
+            child: BlocBuilder<FavoritesBloc, FavoritesState>(
+              buildWhen: (p, c) => p.favoriteIds != c.favoriteIds,
+              builder: (context, favState) {
+                final isFav = favState.favoriteIds.contains(recipeId);
+
+                return GestureDetector(
+                  onTap: userId == null
+                      ? null
+                      : () {
+                    context.read<FavoritesBloc>().add(
+                      FavoriteToggled(
+                        userId: userId,
+                        recipeId: recipeId,
+                      ),
+                    );
+                  },
+                  child:FavoriteButton(isFavorite: isFav),
+                );
+              },
             ),
+          ),
 
-
-          // Content - Bottom
+          // ================= Bottom Content (زي ما هو) =================
           Positioned(
             left: 16,
             right: 16,
@@ -120,17 +139,7 @@ class RecipeCard extends StatelessWidget {
 
                 const SizedBox(height: 12),
 
-                // Star Rating
-                Row(
-                  children: [
-                    for (int i = 0; i < 5; i++)
-                      Icon(
-                        i < 4 ? Icons.star : Icons.star_border,
-                        color: Colors.amber,
-                        size: 20,
-                      ),
-                  ],
-                ),
+                StarsIcons(rating: recipe.durationMinutes),
               ],
             ),
           ),

@@ -8,15 +8,12 @@ import 'package:recipe_app_withai/features/add_recipe/presentation/pages/app_rec
 import 'package:recipe_app_withai/features/auth/presentation/manager/auth_bloc.dart';
 import 'package:recipe_app_withai/features/auth/presentation/pages/sign_in_page.dart';
 import 'package:recipe_app_withai/features/auth/presentation/pages/sign_up_page.dart';
+import 'package:recipe_app_withai/features/favorite/presentation/bloc/favorites_bloc.dart';
 import 'package:recipe_app_withai/features/favorite/presentation/pages/favorite_page.dart';
 import 'package:recipe_app_withai/features/home/presentation/manager/home_bloc.dart';
 import 'package:recipe_app_withai/features/home/presentation/pages/home_page.dart';
+import 'package:recipe_app_withai/features/profile/presentation/manager/profile_bloc.dart';
 import 'package:recipe_app_withai/features/profile/presentation/pages/profile_page.dart';
-import 'package:recipe_app_withai/features/recipe_details/presentation/pages/recipe_details_page.dart';
-import 'package:recipe_app_withai/features/recipe_details/presentation/bloc/recipe_details_bloc.dart';
-import 'package:recipe_app_withai/features/recipe_details/domain/use_cases/get_recipe_details_usecase.dart';
-import 'package:recipe_app_withai/features/recipe_details/domain/use_cases/toggle_favorite_usecase.dart';
-import 'package:recipe_app_withai/features/recipe_details/data/repositories_impl/recipe_details_repo_impl.dart';
 import 'package:recipe_app_withai/core/theme/theme.dart';
 import 'package:recipe_app_withai/onboarding/introduction_screen.dart';
 import 'package:recipe_app_withai/onboarding/splash_screen.dart';
@@ -28,6 +25,9 @@ void main() async{
   runApp(
       MultiBlocProvider(providers: [
         BlocProvider(
+          create: (_) => serviceLocator<FavoritesBloc>(),
+        ),
+        BlocProvider(
           create: (_) => serviceLocator<AppUserCubit>(),
         ),
         BlocProvider(
@@ -38,6 +38,9 @@ void main() async{
         ),
         BlocProvider(
           create: (_) => serviceLocator<HomeBloc>(),
+        ),
+        BlocProvider(
+          create: (_) => serviceLocator<ProfileBloc>(),
         ),
       ],
           child: const MyApp()));
@@ -66,19 +69,19 @@ class MyApp extends StatelessWidget {
           TransitionPage.routeName: (_) =>  TransitionPage(),
           HomePage.routeName: (_) =>  HomePage(),
           ProfilePage.routeName: (_) =>  ProfilePage(),
-          FavoritePage.routeName: (_) => FavoritePage(),
+          FavoritesPage.routeName: (_) => FavoritesPage(),
           AddRecipePage.routeName:(_)=>AddRecipePage(),
-          RecipeDetailsPage.routeName: (context) {
-            final recipeId =
-                ModalRoute.of(context)!.settings.arguments as String;
-            return BlocProvider(
-              create: (_) => RecipeDetailsBloc(
-                GetRecipeDetailsUsecase(RecipeDetailsRepositoryImpl()),
-                ToggleFavoriteUsecase(RecipeDetailsRepositoryImpl()),
-              ),
-              child: RecipeDetailsPage(recipeId: recipeId),
-            );
-          },
+          // RecipeDetailsPage.routeName: (context) {
+          //   final recipeId =
+          //       ModalRoute.of(context)!.settings.arguments as String;
+          //   return BlocProvider(
+          //     create: (_) => RecipeDetailsBloc(
+          //       GetRecipeDetailsUsecase(RecipeDetailsRepositoryImpl()),
+          //       ToggleFavoriteUsecase(RecipeDetailsRepositoryImpl()),
+          //     ),
+          //     child: RecipeDetailsPage(recipeId: recipeId),
+          //   );
+          // },
         },
       ),
     );

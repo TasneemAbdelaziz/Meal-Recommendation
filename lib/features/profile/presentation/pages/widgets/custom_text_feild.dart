@@ -1,28 +1,35 @@
 import 'package:flutter/material.dart';
 
-class CustomTextFeild extends StatefulWidget {
-  final String? hint;
-  final String label;
-  const CustomTextFeild({
+class CustomTextFeild extends StatelessWidget {
+   String? hint;
+   String labelText;
+   TextEditingController controller;
+   bool? obscureText;
+   CustomTextFeild({
     super.key,
-    required this.label,
+    required this.controller,
+    required this.labelText,
+    this.obscureText,
     this.hint,
   });
 
   @override
-  State<CustomTextFeild> createState() => _CustomTextFeildState();
-}
-
-class _CustomTextFeildState extends State<CustomTextFeild> {
-  @override
   Widget build(BuildContext context) {
     return TextField(
+      obscureText: obscureText??false,
       decoration: InputDecoration(
-        labelText: widget.label,
-        hintText: widget.hint,
-        
+        labelText: labelText,
+        hintText: hint,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+          borderSide: const BorderSide(color: Colors.grey),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+          borderSide: const BorderSide(color: Colors.blue, width: 2),
         ),
       ),
     );

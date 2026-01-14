@@ -1,5 +1,6 @@
 part of 'auth_bloc.dart';
 
+
 @immutable
 sealed class AuthState {
   AuthState();
@@ -17,5 +18,7 @@ final class AuthSuccess extends AuthState {
 }
 final class AuthFailure extends AuthState {
   final String message;
-  AuthFailure(this.message);
+  final ErrorType? errorType;
+  
+  AuthFailure(this.message, {this.errorType});
 }
