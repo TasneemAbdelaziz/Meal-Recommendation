@@ -40,8 +40,8 @@ class RecipeRepositoryImpl implements RecipeRepository {
   // }
 
   @override
-  List<RecipeEntity> getFavoriteRecipes() =>
-      _recipes.where((r) => r.isFavorite).toList();
+  // List<RecipeEntity> getFavoriteRecipes() =>
+      // _recipes.where((r) => r.isFavorite).toList();
 
   @override
   Future<Either<Failure, RecipeEntity>> uploadRecipe({
@@ -56,6 +56,7 @@ class RecipeRepositoryImpl implements RecipeRepository {
   }) async {
     print('🏪 Repository: بدء رفع الوصفة - $title');
 
+
     try{
       RecipeModel recipeModel= RecipeModel(
           id: const Uuid().v1(),
@@ -64,7 +65,7 @@ class RecipeRepositoryImpl implements RecipeRepository {
           durationMinutes: durationMinutes,
           imagePath: "",
           ingredients: ingredients,
-          isFavorite: isFavorite,
+          // isFavorite: isFavorite,
           posterId: posterId,
           title: title,
           updatedAt: DateTime.now());

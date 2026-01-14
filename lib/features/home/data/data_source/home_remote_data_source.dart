@@ -33,7 +33,7 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource{
   Future<List<RecipeModel>> getAllRecipes() async {
     try {
       final response = await supabaseClient
-          .from('meals')
+          .from('recipes')
           .select('*')
           .order('title');
 

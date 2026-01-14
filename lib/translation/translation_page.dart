@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:recipe_app_withai/core/theme/app_pallet.dart';
 import 'package:recipe_app_withai/features/favorite/presentation/pages/favorite_page.dart';
 import 'package:recipe_app_withai/features/home/presentation/pages/home_page.dart';
+import 'package:recipe_app_withai/features/profile/presentation/pages/Drawer.dart';
 import 'package:recipe_app_withai/features/profile/presentation/pages/profile_page.dart';
 import 'package:recipe_app_withai/translation/icon_nav_bar.dart';
 
@@ -19,21 +20,34 @@ class _TransitionPageState extends State<TransitionPage> {
 
   final List<Widget> _pages = [
     const HomePage(),
-    FavoritePage(),
+    FavoritesPage(),
     const ProfilePage(),
   ];
+
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer:  AppDrawer(selectedIndex: selectedIndex,
+      onDestinationSelected: (index) {
+        setState(() {
+          selectedIndex = index;
+        });
+      },
+      ),
       appBar: AppBar(
         backgroundColor: AppPallet.whiteColor,
-        leading: IconButton(
-          onPressed: () {},
-          icon: Icon(
-            Icons.menu,
-            color: AppPallet.mainColor,
-            size: 30,
+        leading: Builder(
+          builder: (context) => IconButton(
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+            icon: Icon(
+              Icons.menu,
+              color: AppPallet.mainColor,
+              size: 30,
+            ),
           ),
         ),
         actions: [

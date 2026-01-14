@@ -10,7 +10,7 @@ class RecipeEntity {
   final List<Ingredient> ingredients;
   final int durationMinutes;
   final String imagePath;
-  final bool isFavorite;
+  // final bool isFavorite;
   final DateTime updatedAt;
 
   RecipeEntity(
@@ -23,7 +23,7 @@ class RecipeEntity {
       required this.ingredients,
       required this.durationMinutes,
       required this.imagePath,
-      required this.isFavorite,
+      // required this.isFavorite,
       required this.updatedAt});
 
 
