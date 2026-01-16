@@ -3,9 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:recipe_app_withai/core/theme/app_pallet.dart';
 import 'package:recipe_app_withai/features/add_recipe/presentation/pages/app_recipe_page.dart';
+import 'package:recipe_app_withai/features/ai_chat/presentation/pages/ai_recipe_search_page.dart';
+import 'package:recipe_app_withai/features/ai_chat/presentation/bloc/ai_recipe_bloc.dart';
+import 'package:recipe_app_withai/core/init_dependencies.dart';
 import 'package:recipe_app_withai/features/home/domain/entities/recipe_entity.dart';
 import 'package:recipe_app_withai/features/home/presentation/manager/home_bloc.dart';
 import 'package:recipe_app_withai/features/home/presentation/widgets/cards/recipe_card.dart';
+import 'package:recipe_app_withai/recipe_description/presentation/pages/recipe_details_page.dart';
+import 'package:recipe_app_withai/recipe_description/presentation/bloc/recipe_details_bloc.dart';
+import 'package:recipe_app_withai/recipe_description/domain/entities/recipe_details_request.dart';
+
 
 class HomePage extends StatefulWidget {
   static const String routeName = "HomePage";
@@ -65,7 +72,15 @@ class _HomePageState extends State<HomePage> {
                 //   child:
                 IconButton(
                     onPressed: () {
-
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BlocProvider(
+                            create: (_) => serviceLocator<AiRecipeBloc>(),
+                            child: const AiRecipeChatPage(),
+                          ),
+                        ),
+                      );
                     },
                     icon:  Image.asset("assets/icons/gemini.png",width: 40.w,height: 40.h,),
                     padding: EdgeInsets.zero,
@@ -130,7 +145,25 @@ class _HomePageState extends State<HomePage> {
                       if (recipe == null) return const SizedBox.shrink();
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 12),
-                        child: RecipeCard(recipe: recipe),
+                        child: GestureDetector(
+                          onTap: (){
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BlocProvider(
+                                  create: (_) => serviceLocator<RecipeDetailsBloc>(),
+                                  child: RecipeDetailsPage(
+                                    request: RecipeDetailsRequest(
+                                      id: recipe.id,
+                                      source: RecipeSource.supabase,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          child: RecipeCard(recipe: recipe),
+                        ),
                       );
                     },
                   );

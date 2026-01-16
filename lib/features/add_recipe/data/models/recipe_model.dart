@@ -11,7 +11,7 @@ class RecipeModel extends RecipeEntity {
     required super.durationMinutes,
     required super.imagePath,
     required super.ingredients,
-    required super.isFavorite,
+    // required super.isFavorite,
     required super.posterId,
     required super.title,
     required super.updatedAt,
@@ -27,7 +27,7 @@ class RecipeModel extends RecipeEntity {
       'id':id,
       'updated_at':updatedAt.toIso8601String(),
       'poster_id':posterId,
-      'is_favorite':isFavorite,
+      // 'is_favorite' is removed - not stored in recipes table (per-user favorites should be in separate table)
       'title':title,
       'category':category,
       'description':description,
@@ -64,7 +64,7 @@ class RecipeModel extends RecipeEntity {
         imagePath:map['main_image_url']as String,
         durationMinutes:(map['duration'] ?? 0) as int,
         category:map['category']as String,
-        isFavorite:map['is_favorite']as bool,
+        // isFavorite:(map['is_favorite'] ?? false) as bool, // Default to false if not present
         updatedAt:map['updated_at']==null?DateTime.now():DateTime.parse(map['updated_at']),
         ingredients:ingredientsList,
         description:map['description']
@@ -92,7 +92,7 @@ class RecipeModel extends RecipeEntity {
       ingredients: ingredients ?? this.ingredients,
       durationMinutes: durationMinutes ?? this.durationMinutes,
       imagePath: imagePath ?? this.imagePath,
-      isFavorite: isFavorite ?? this.isFavorite,
+      // isFavorite: isFavorite ?? this.isFavorite,
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }

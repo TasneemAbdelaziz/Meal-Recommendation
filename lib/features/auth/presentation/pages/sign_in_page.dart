@@ -2,10 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:recipe_app_withai/core/theme/app_pallet.dart';
 import 'package:recipe_app_withai/core/utils/validators.dart';
+import 'package:recipe_app_withai/core/widgets/error_dialog.dart';
 import 'package:recipe_app_withai/features/auth/presentation/manager/auth_bloc.dart';
 import 'package:recipe_app_withai/features/auth/presentation/pages/sign_up_page.dart';
 import 'package:recipe_app_withai/features/auth/presentation/widgets/auth_button.dart';
@@ -14,8 +14,6 @@ import 'package:recipe_app_withai/features/auth/presentation/widgets/check_box.d
 import 'package:recipe_app_withai/features/auth/presentation/widgets/login_text_with_divider.dart';
 import 'package:recipe_app_withai/features/auth/presentation/widgets/social_sign_in.dart';
 import 'package:recipe_app_withai/translation/translation_page.dart';
-// import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:supabase_flutter/supabase_flutter.dart' as supa;
 
 class SignIn extends StatefulWidget {
   static const routeName = "SignIn";
@@ -68,11 +66,19 @@ class _SignInState extends State<SignIn> {
                       if (state is AuthFailure) {
                         Navigator.of(context, rootNavigator: true)
                             .popUntil((route) => route.isFirst);
-                        QuickAlert.show(
-                          context: context,
-                          type: QuickAlertType.error,
-                          title: 'Signing In',
-                          text: state.message,
+                        
+                        // Show error dialog with retry functionality
+                        ErrorDialog.show(
+                          context,
+                          message: state.message,
+                          errorType: state.errorType,
+                          onRetry: () {
+                            if (_formKey.currentState!.validate()) {
+                              context.read<AuthBloc>().add(AuthSignIn(
+                                  email: emailController.text.trim(),
+                                  password: passwordController.text.trim()));
+                            }
+                          },
                         );
                       }
                       if (state is AuthLoading) {
@@ -160,71 +166,9 @@ class _SignInState extends State<SignIn> {
                                   width: 66.w,
                                   height: 66.h,
                                 ),
-    // SocialSignInButton(imgUrl: "assets/icons/facebook.png", authEvent: authEvent)
                                 SizedBox(
                                   width: 10.w,
                                 ),
-                                // GestureDetector(
-                                //     onTap: () async {
-                                //       GoogleSignInButton();
-                                      // try {
-                                      //   const webClientId =
-                                      //       '18488283895-6jcn666troknjnk889sprolq72qkva7h.apps.googleusercontent.com';
-                                      //   final GoogleSignIn googleSignIn =
-                                      //       GoogleSignIn(
-                                      //     scopes: ['email'],
-                                      //     clientId:
-                                      //         webClientId, // ممكن تحتاجي تسيبيه فاضي لو أندرويد
-                                      //   );
-                                      //
-                                      //   final GoogleSignInAccount? googleUser =
-                                      //       await googleSignIn.signIn();
-                                      //   if (googleUser == null) {
-                                      //     // المستخدم لغى تسجيل الدخول
-                                      //     return;
-                                      //   }
-                                      //
-                                      //   final GoogleSignInAuthentication
-                                      //       googleAuth =
-                                      //       await googleUser.authentication;
-                                      //
-                                      //   final idToken = googleAuth.idToken;
-                                      //   final accessToken =
-                                      //       googleAuth.accessToken;
-                                      //
-                                      //   if (idToken == null ||
-                                      //       accessToken == null) {
-                                      //     throw Exception(
-                                      //         'فشل في الحصول على التوكن من Google');
-                                      //   }
-                                      //   await supa.Supabase.instance.client.auth
-                                      //       .signInWithIdToken(
-                                      //     provider: supa.OAuthProvider.google,
-                                      //     idToken: idToken,
-                                      //     accessToken: accessToken,
-                                      //   );
-                                      //   final user = supa.Supabase.instance.client.auth.currentUser;
-                                      //   if (user != null && context.mounted) {
-                                      //     Navigator.pushReplacementNamed(context, TransitionPage.routeName);
-                                      //   }
-                                      // } catch (e) {
-                                      //   debugPrint('Google Sign-In Error: $e');
-                                      //   if (context.mounted) {
-                                      //     ScaffoldMessenger.of(context)
-                                      //         .showSnackBar(
-                                      //       SnackBar(
-                                      //         content: Text(
-                                      //             'حدث خطأ أثناء تسجيل الدخول بـ Google: $e'),
-                                      //         backgroundColor: Colors.red,
-                                      //       ),
-                                      //     );
-                                      //   }
-                                      // }
-                                    // },
-                                    // child: Image.asset(
-                                    //     "assets/icons/Google.png",
-                                    //     width: 66.w,
-                                    //     height: 66.h)),
                                 SocialSignInButton(authEvent: AuthGoogleSignIn(),imgUrl: "assets/icons/Google.png",),
                               ],
                             ),

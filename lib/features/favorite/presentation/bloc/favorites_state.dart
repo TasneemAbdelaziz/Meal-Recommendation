@@ -1,37 +1,44 @@
-part of 'favorites_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:recipe_app_withai/features/add_recipe/domian/entities/recipe_entity.dart';
 
-abstract class FavoritesState extends Equatable {
-  const FavoritesState();
+enum FavoritesStatus { initial, loading, ready, error }
+
+class FavoritesState extends Equatable {
+  final FavoritesStatus status;
+  final Set<String> favoriteIds;
+  final List<RecipeEntity> favoriteRecipes; // ✅ NEW
+  final String? errorMessage;
+
+  const FavoritesState({
+    required this.status,
+    required this.favoriteIds,
+    required this.favoriteRecipes,
+    required this.errorMessage,
+  });
+
+  const FavoritesState.initial()
+      : status = FavoritesStatus.initial,
+        favoriteIds = const <String>{},
+        favoriteRecipes = const <RecipeEntity>[], // ✅ NEW
+        errorMessage = null;
+
+  FavoritesState copyWith({
+    FavoritesStatus? status,
+    Set<String>? favoriteIds,
+    List<RecipeEntity>? favoriteRecipes, // ✅ NEW
+    String? errorMessage,
+    bool clearError = false,
+  }) {
+    return FavoritesState(
+      status: status ?? this.status,
+      favoriteIds: favoriteIds ?? this.favoriteIds,
+      favoriteRecipes: favoriteRecipes ?? this.favoriteRecipes, // ✅ NEW
+      errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
+    );
+  }
+
+  bool isFavorite(String recipeId) => favoriteIds.contains(recipeId);
 
   @override
-  List<Object> get props => [];
-}
-
-class FavoritesInitialState extends FavoritesState {}
-
-class FavoritesLoadedState extends FavoritesState {
-  final List<RecipeEntity> favorites;
-
-  const FavoritesLoadedState(this.favorites);
-
-  @override
-  List<Object> get props => [favorites];
-}
-
-class FavoritesErrorState extends FavoritesState {
-  final String message;
-
-  const FavoritesErrorState(this.message);
-
-  @override
-  List<Object> get props => [message];
-}
-
-class FavoriteRemovedState extends FavoritesState {
-  final String recipeId;
-
-  const FavoriteRemovedState(this.recipeId);
-
-  @override
-  List<Object> get props => [recipeId];
+  List<Object?> get props => [status, favoriteIds, favoriteRecipes, errorMessage];
 }
