@@ -27,6 +27,7 @@ abstract interface class SupabaseDatasource{
     required String password
   });
   Future<UserModel?> getCurrentUserData();
+  Future<void> logout();
 }
 
 class  SupabaseDatasourceImpl implements SupabaseDatasource{
@@ -207,4 +208,14 @@ class  SupabaseDatasourceImpl implements SupabaseDatasource{
   //
   //
   // }
+  @override
+  Future<void> logout() async {
+    try {
+      await googleSignIn.signOut();
+      await supabaseClient.auth.signOut();
+    } catch (e) {
+      debugPrint('❌ Logout error: $e');
+      throw AuthErrorMapper.mapException(e);
+    }
+  }
 }

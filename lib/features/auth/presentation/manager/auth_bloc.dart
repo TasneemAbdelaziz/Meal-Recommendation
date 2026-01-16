@@ -7,6 +7,7 @@ import 'package:recipe_app_withai/core/usecase/usecase.dart';
 import 'package:recipe_app_withai/features/auth/domain/use_cases/current_user.dart';
 import 'package:recipe_app_withai/features/auth/domain/use_cases/google_sign_in.dart';
 import 'package:recipe_app_withai/features/auth/domain/use_cases/user_sign_in.dart';
+import 'package:recipe_app_withai/features/auth/domain/use_cases/user_logout.dart';
 import 'package:recipe_app_withai/features/auth/domain/use_cases/user_sign_up.dart';
 
 part 'auth_event.dart';
@@ -17,6 +18,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final UserSignIn _userSignIn;
   final CurrentUser _currentUser;
   final GoogleSignInUseCase _googleSignInUseCase;
+  final UserLogout _userLogout;
   final AppUserCubit _appUserCubit;
 
 
@@ -26,11 +28,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required UserSignIn userSignIn,
     required CurrentUser currentUser,
     required GoogleSignInUseCase googleSignInUseCase,
+    required UserLogout userLogout,
     required AppUserCubit appUserCubit,
   }) : _userSignUp = userSignUp,
   _userSignIn = userSignIn,
   _currentUser =currentUser,
    _googleSignInUseCase = googleSignInUseCase,
+        _userLogout = userLogout,
         _appUserCubit = appUserCubit,
 
       super(AuthInitial()) {
@@ -38,6 +42,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthSignIn>(_onAuthSignIn);
     on<AuthIsUserLoggedIn>(_isUserLoggedIn);
     on<AuthGoogleSignIn>(_onGoogleSignIn);
+    on<AuthLogout>(_onLogout);
     on<AuthEvent>((_,emit)=>emit(AuthLoading()));
 
 
@@ -86,5 +91,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   void _emitAuthSuccess(MyUser user,Emitter<AuthState>emit) async {
     _appUserCubit.updateUser(user);
     emit(AuthSuccess(user));
+  }
+
+  void _onLogout(AuthLogout event, Emitter<AuthState> emit) async {
+    final res = await _userLogout(NoParams());
+    res.fold(
+      (failure) => emit(AuthFailure(failure.message, errorType: failure.errorType)),
+      (_) {
+        _appUserCubit.updateUser(null);
+        emit(AuthInitial());
+      },
+    );
   }
 }

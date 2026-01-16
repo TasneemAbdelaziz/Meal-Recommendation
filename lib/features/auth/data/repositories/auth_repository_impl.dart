@@ -82,4 +82,17 @@ class AuthRepositoryImpl implements AuthRepository{
     }
   }
 
+  @override
+  Future<Either<Failure, void>> logout() async {
+    try {
+      await supabaseDatasource.logout();
+      return right(null);
+    } catch (e) {
+      if (e is Failure) {
+        return left(e);
+      }
+      return left(Failure(e.toString()));
+    }
+  }
+
 }

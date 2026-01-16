@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 class CustomTextFeild extends StatelessWidget {
    String? hint;
-   String labelText;
+   String? labelText;
    TextEditingController controller;
    bool? obscureText;
    CustomTextFeild({
     super.key,
     required this.controller,
-    required this.labelText,
+     this.labelText,
     this.obscureText,
     this.hint,
   });

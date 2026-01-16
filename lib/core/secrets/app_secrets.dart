@@ -5,6 +5,6 @@ class AppSecrets{
   static const googleIOSClientId  = "18488283895-2r7d1d26d9s4bija3doph7fh2cm56g2j.apps.googleusercontent.com";
   static const googleWebClientId  = "18488283895-6jcn666troknjnk889sprolq72qkva7h.apps.googleusercontent.com";
   
-  static const geminiApiKey = "AIzaSyDnWh1rsh_CqyNFRtZkyIM4Evmh9oJFDbc";
+  static const geminiApiKey = "AIzaSyCyKmwluRffP8E2m1Yf7DBvORMbCRYrRhQ";
   static const spoonacularApiKey = "7276b0e87d5d4f2fac96a6ebc29d65c5";
 }
