@@ -22,7 +22,7 @@ A futuristic Flutter application that leverages Gemini AI as the intelligent eng
 
 ---
 
-## ✨ Features
+##  Features
 - **AI-Powered Recommendations:** Exclusive meal suggestions powered by Gemini AI. Get recipes based on your natural language patterns and chat interactions from the Spoonacular API.
 - **Recipe Management:** Browse detailed recipe information including instructions and nutritional value.
 - **Favorites System:** Save your favorite recipes for quick access.
@@ -170,6 +170,3 @@ Contributions are welcome! Please follow these steps:
 ## 👤 Contact
 **Tasneem AbdElaziz** - [GitHub](https://github.com/TasneemAbdelaziz)  
 Project Link: [https://github.com/TasneemAbdelaziz/Meal-Recommendation](https://github.com/TasneemAbdelaziz/Meal-Recommendation)
-
----
-*Made with ❤️ using Flutter and Gemini AI*
