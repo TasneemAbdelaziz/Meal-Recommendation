@@ -109,7 +109,7 @@ Each feature is divided into:
    ```
 
 3. **Configure Environment Variables:**
-   Create a `lib/core/secrets/app_secrets.dart` (or use a `.env` file) as shown in the [Environment Variables](#-environment-variables) section.
+   Create a `lib/core/secrets/app_secrets.dart`
 
 4. **Run the app:**
    ```bash
@@ -123,15 +123,6 @@ Each feature is divided into:
 ---
 
 ## 🔑 Environment Variables
-
-### `.env.example`
-```env
-SUPABASE_URL=https://your-project-id.supabase.co
-SUPABASE_ANON_KEY=your-anon-key
-GEMINI_API_KEY=your-gemini-key
-SPOONACULAR_API_KEY=your-spoonacular-key
-GOOGLE_WEB_CLIENT_ID=your-google-client-id
-```
 
 If using `app_secrets.dart`:
 ```dart
