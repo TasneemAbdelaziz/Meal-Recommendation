@@ -51,8 +51,6 @@ A futuristic Flutter application that leverages Gemini AI as the intelligent eng
 - **AI Orchestration:** [Gemini API](https://ai.google.dev) (google_generative_ai)
 - **Recipe Data Source:** [Spoonacular API](https://spoonacular.com/food-api)
 - **State Management:** [BLoC](https://pub.dev/packages/flutter_bloc) / Cubit
-- **Dependency Injection:** [Get_It](https://pub.dev/packages/get_it)
-- **Functional Programming:** [fpdart](https://pub.dev/packages/fpdart)
 - **Networking:** [http](https://pub.dev/packages/http)
 - **Design:** Google Fonts, QuickAlert, Animated Splash, Smooth Page Indicator.
 
