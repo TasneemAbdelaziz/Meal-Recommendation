@@ -43,9 +43,6 @@ A futuristic Flutter application that leverages Gemini AI as the intelligent eng
 | Ai Chat | ![Results](screenshots/results.png) |
 | Profile | ![Profile](screenshots/profile.png) |
 
-> [!NOTE]
-> Create a `screenshots/` folder in the root directory and place your images there to see them in this README.
-
 ---
 
 ## 🛠 Tech Stack
