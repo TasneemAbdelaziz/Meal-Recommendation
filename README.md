@@ -24,7 +24,6 @@ A futuristic Flutter application that leverages Gemini AI as the intelligent eng
 
 ## ✨ Features
 - **AI-Powered Recommendations:** Exclusive meal suggestions powered by Gemini AI. Get recipes based on your natural language patterns and chat interactions from the Spoonacular API.
-- **Smart Search:** Search for recipes by name, cuisine, or ingredients.
 - **Recipe Management:** Browse detailed recipe information including instructions and nutritional value.
 - **Favorites System:** Save your favorite recipes for quick access.
 - **Secure Authentication:** User signup and login powered by Supabase Auth (includes Google Sign-In support).
@@ -38,9 +37,10 @@ A futuristic Flutter application that leverages Gemini AI as the intelligent eng
 
 | Screen | Preview |
 |-------|---------|
-| Home | ![Home](screenshots/home.png) |
-| Recommendation Results | ![Results](screenshots/results.png) |
+|Splash Screen| (https://github.com/user-attachments/assets/582ec353-bd63-4f2b-b60d-7cd0fcac9803) |
+|[Home Screen |(https://github.com/user-attachments/assets/9d63f3f0-8e32-4555-be12-00b5d3ad456a)|
 | Meal Details | ![Details](screenshots/details.png) |
+| Ai Chat | ![Results](screenshots/results.png) |
 | Profile | ![Profile](screenshots/profile.png) |
 
 > [!NOTE]
