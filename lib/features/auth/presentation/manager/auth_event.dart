@@ -18,6 +18,6 @@ final class AuthSignIn extends AuthEvent{
 class AuthGoogleSignIn extends AuthEvent {}
 
 
-final class AuthIsUserLoggedIn extends AuthEvent{
+final class AuthIsUserLoggedIn extends AuthEvent{}
 
-}
+final class AuthLogout extends AuthEvent{}

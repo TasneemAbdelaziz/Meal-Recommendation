@@ -14,6 +14,7 @@ import 'package:recipe_app_withai/features/auth/domain/repositories/auth_reposit
 import 'package:recipe_app_withai/features/auth/domain/use_cases/current_user.dart';
 import 'package:recipe_app_withai/features/auth/domain/use_cases/google_sign_in.dart';
 import 'package:recipe_app_withai/features/auth/domain/use_cases/user_sign_in.dart';
+import 'package:recipe_app_withai/features/auth/domain/use_cases/user_logout.dart';
 import 'package:recipe_app_withai/features/auth/domain/use_cases/user_sign_up.dart';
 import 'package:recipe_app_withai/features/auth/presentation/manager/auth_bloc.dart';
 import 'package:recipe_app_withai/features/favorite/data/datasources/favorites_local_datasource.dart';
@@ -185,7 +186,8 @@ void initAuth() {
     ..registerFactory(() => UserSignUp(serviceLocator()))
     ..registerFactory(() => UserSignIn(serviceLocator()))
     ..registerFactory(() => CurrentUser(serviceLocator()))
-    ..registerFactory(() => GoogleSignInUseCase(serviceLocator()));
+    ..registerFactory(() => GoogleSignInUseCase(serviceLocator()))
+    ..registerFactory(() => UserLogout(serviceLocator()));
 
   // Bloc
   serviceLocator.registerLazySingleton(
@@ -194,6 +196,7 @@ void initAuth() {
       googleSignInUseCase: serviceLocator(),
       userSignUp: serviceLocator(),
       userSignIn: serviceLocator(),
+      userLogout: serviceLocator(),
       currentUser: serviceLocator(),
     ),
   );

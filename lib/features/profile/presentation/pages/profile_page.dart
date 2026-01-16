@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:recipe_app_withai/core/common/cubits/app_users/app_user_cubit.dart';
-import 'package:recipe_app_withai/core/theme/app_pallet.dart';
+
 import 'package:recipe_app_withai/features/profile/domain/entities/profile_entity.dart';
 import 'package:recipe_app_withai/features/profile/presentation/manager/profile_bloc.dart';
-import 'package:recipe_app_withai/features/profile/presentation/pages/widgets/custom_text_feild.dart';
-import 'package:recipe_app_withai/features/profile/presentation/pages/widgets/profile_circle_avatar.dart';
-import 'dart:developer';
+import 'package:recipe_app_withai/features/profile/presentation/pages/widgets/profile_error_view.dart';
+import 'package:recipe_app_withai/features/profile/presentation/pages/widgets/profile_form.dart';
+import 'package:recipe_app_withai/features/profile/presentation/pages/widgets/profile_loading_view.dart';
+
 
 class ProfilePage extends StatefulWidget {
   static const routeName = "ProfilePage";
@@ -81,11 +81,14 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       body: BlocConsumer<ProfileBloc, ProfileState>(
         listener: (context, state) {
-          if (state is ProfileUpdateSuccess) {
+          if (state is ProfileLoaded) {
+            _fillTextFields(state.profile);
+          } else if (state is ProfileUpdateSuccess) {
+            _fillTextFields(state.profile);
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('تم تحديث البيانات بنجاح!')),
             );
-            
+
             // Update AppUserCubit to keep it in sync
             final userState = context.read<AppUserCubit>().state;
             if (userState is AppUserLoggedIn) {
@@ -104,104 +107,37 @@ class _ProfilePageState extends State<ProfilePage> {
         },
         builder: (context, state) {
           if (state is ProfileLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const ProfileLoadingView();
           }
 
           if (state is ProfileLoaded || state is ProfileUpdateSuccess) {
-            final profile = state is ProfileLoaded 
-                ? state.profile 
+            final profile = state is ProfileLoaded
+                ? state.profile
                 : (state as ProfileUpdateSuccess).profile;
-            
-            // Fill text fields with profile data
-            if (_usernameController.text.isEmpty) {
-              _fillTextFields(profile);
-            }
 
-            return Padding(
-              padding: const EdgeInsets.all(10),
-              child: ListView(
-                children: [
-                  Column(
-                    children: [
-                      const SizedBox(height: 10),
-                      const ProfileCircleAvatar(),
-                      const SizedBox(height: 20),
-                      CustomTextFeild(
-                        controller: _usernameController,
-                        labelText: 'User Name',
-                      ),
-                      const SizedBox(height: 20),
-                      CustomTextFeild(
-                        controller: _emailController,
-                        labelText: 'Email',
-                      ),
-                      const SizedBox(height: 20),
-                      CustomTextFeild(
-                        controller: _phoneController,
-                        labelText: 'Phone Number',
-                      ),
-                      const SizedBox(height: 20),
-                      CustomTextFeild(
-                        controller: _passwordController,
-                        labelText: 'Password',
-                        obscureText: true,
-                      ),
-                      const SizedBox(height: 20),
-                      Container(
-                        width: 400.w,
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppPallet.mainColor,
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 30.w,
-                              vertical: 15.h,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.r),
-                            ),
-                          ),
-                          onPressed: _updateProfile,
-                          child: Text(
-                            'Save',
-                            style: TextStyle(
-                              color: AppPallet.whiteColor,
-                              fontSize: 25.sp,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+            return ProfileForm(
+              usernameController: _usernameController,
+              emailController: _emailController,
+              phoneController: _phoneController,
+              passwordController: _passwordController,
+              onSave: _updateProfile,
+              nameHint: profile.username,
+              emailHint: profile.email,
+              phoneHint: profile.phone ?? '',
             );
           }
 
           if (state is ProfileFailure) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Error: ${state.message}'),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () {
-                      final userState = context.read<AppUserCubit>().state;
-                      if (userState is AppUserLoggedIn) {
-                        context.read<ProfileBloc>().add(
-                          ProfileLoadRequested(userState.user.id),
-                        );
-                      }
-                    },
-                    child: const Text('Retry'),
-                  ),
-                ],
-              ),
+            return ProfileErrorView(
+              message: state.message,
+              onRetry: () {
+                final userState = context.read<AppUserCubit>().state;
+                if (userState is AppUserLoggedIn) {
+                  context.read<ProfileBloc>().add(
+                    ProfileLoadRequested(userState.user.id),
+                  );
+                }
+              },
             );
           }
 
@@ -215,68 +151,15 @@ class _ProfilePageState extends State<ProfilePage> {
               _phoneController.text = userState.user.phone;
             }
 
-            return Padding(
-              padding: const EdgeInsets.all(10),
-              child: ListView(
-                children: [
-                  Column(
-                    children: [
-                      const SizedBox(height: 10),
-                      const ProfileCircleAvatar(),
-                      const SizedBox(height: 20),
-                      CustomTextFeild(
-                        controller: _usernameController,
-                        labelText: 'User Name',
-                      ),
-                      const SizedBox(height: 20),
-                      CustomTextFeild(
-                        controller: _emailController,
-                        labelText: 'Email',
-                      ),
-                      const SizedBox(height: 20),
-                      CustomTextFeild(
-                        controller: _phoneController,
-                        labelText: 'Phone Number',
-                      ),
-                      const SizedBox(height: 20),
-                      CustomTextFeild(
-                        controller: _passwordController,
-                        labelText: 'Password',
-                        obscureText: true,
-                      ),
-                      const SizedBox(height: 20),
-                      Container(
-                        width: 400.w,
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppPallet.mainColor,
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 30.w,
-                              vertical: 15.h,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.r),
-                            ),
-                          ),
-                          onPressed: _updateProfile,
-                          child: Text(
-                            'Save',
-                            style: TextStyle(
-                              color: AppPallet.whiteColor,
-                              fontSize: 25.sp,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+            return ProfileForm(
+              usernameController: _usernameController,
+              emailController: _emailController,
+              phoneController: _phoneController,
+              passwordController: _passwordController,
+              onSave: _updateProfile,
+              nameHint: userState.user.name,
+              emailHint: userState.user.email,
+              phoneHint: userState.user.phone,
             );
           }
 
@@ -286,4 +169,6 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 }
+
+
 

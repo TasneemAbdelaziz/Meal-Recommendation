@@ -15,7 +15,18 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
           .from('profiles')
           .select()
           .eq('id', userId)
-          .single();
+          .maybeSingle();
+
+      if (response == null) {
+        // If profile doesn't exist, return a default model
+        // This handles new users who haven't had their profile record created yet
+        return ProfileModel(
+          id: userId,
+          username: 'User',
+          email: supabaseClient.auth.currentUser?.email ?? '',
+          phone: '',
+        );
+      }
 
       return ProfileModel.fromJson(response);
     } catch (e) {

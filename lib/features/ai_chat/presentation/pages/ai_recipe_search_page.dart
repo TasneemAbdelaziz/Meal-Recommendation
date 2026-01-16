@@ -11,6 +11,7 @@ class AiRecipeChatPage extends StatefulWidget {
   @override
   State<AiRecipeChatPage> createState() => _AiRecipeChatPageState();
 }
+
 class _AiRecipeChatPageState extends State<AiRecipeChatPage> {
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scroll = ScrollController();
