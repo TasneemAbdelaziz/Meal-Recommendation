@@ -142,8 +142,7 @@ class AppSecrets {
   static const supabaseAnonKey = "YOUR_ANON_KEY";
   static const geminiApiKey = "YOUR_GEMINI_KEY";
 }
-
-
+```
 ## 💾 Database Schema (Supabase)
 
 The project uses PostgreSQL with Row Level Security (RLS) to protect user data.
